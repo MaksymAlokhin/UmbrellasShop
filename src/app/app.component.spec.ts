@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 import { WelcomeComponent } from './home/welcome.component';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
+  beforeEach(async() => TestBed.configureTestingModule({
     imports: [    
       RouterTestingModule.withRoutes([
         { path: 'welcome', component: WelcomeComponent },
@@ -25,13 +25,13 @@ describe('AppComponent', () => {
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+    const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it(`should have as pageTitle 'Umbrellas Shop'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+    const app = fixture.debugElement.componentInstance;
     expect(app.pageTitle).toEqual('Umbrellas Shop');
   });
 });

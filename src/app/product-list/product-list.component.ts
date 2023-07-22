@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IProduct } from './product';
-import { ProductService } from './product.service';
+import { IProduct } from '../products/product';
+import { ProductService } from '../products/product.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -47,7 +47,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   performFilter(filerBy: string): IProduct[] {
     filerBy = filerBy.toLowerCase();
     return this.products.filter((product: IProduct) =>
-      product.productName.toLowerCase().includes(filerBy)
+      product.productName!.toLowerCase().includes(filerBy)
     );
   }
 

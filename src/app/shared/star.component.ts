@@ -12,7 +12,7 @@ import {
   styleUrls: ['./star.component.scss'],
 })
 export class StarComponent implements OnChanges {
-  @Input() rating: number = 0;
+  @Input() rating = 0;
   cropWidth = 75;
   @Output() ratingClicked: EventEmitter<string> = new EventEmitter<string>();
 

@@ -41,19 +41,19 @@
             </td>
 
             <td>
-              <a [routerLink]="['/products', product.productId]">{{
+              <a [routerLink]="['/products', product.id]">{{
                 product.productName
               }}</a>
             </td>
 
             <td>
-              {{ product.productCode | lowercase | convertToSpaces : "-" }}
+              {{ product.productCode! | lowercase | convertToSpaces : "-" }}
             </td>
             <td>{{ product.releaseDate }}</td>
             <td>{{ product.price | currency : "USD" : "symbol" : "1.2-2" }}</td>
             <td>
               <um-star
-                [rating]="product.starRating"
+                [rating]="product.starRating!"
                 (ratingClicked)="onRatingClicked($event)"
               ></um-star>
             </td>
