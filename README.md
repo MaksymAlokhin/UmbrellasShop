@@ -1,10 +1,10 @@
 ﻿Umbrellas Shop<br />
 =========
 
-Angular demo app built with the help of tutorials.<br />
+Angular demo app built with the help of tutorials.
 
-- [Angular Getting Started by Deborah Kurata](https://app.pluralsight.com/library/courses/angular-2-getting-started-update/table-of-contents)<br /><br />
-- [Angular Reactive Forms by Deborah Kurata](https://app.pluralsight.com/library/courses/angular-2-reactive-forms/table-of-contents)<br /><br />
+- [Angular Getting Started by Deborah Kurata](https://app.pluralsight.com/library/courses/angular-2-getting-started-update/table-of-contents)
+- [Angular Reactive Forms by Deborah Kurata](https://app.pluralsight.com/library/courses/angular-2-reactive-forms/table-of-contents)
 
 Images courtesy of [Pixabay](https://pixabay.com/)<br /><br />
 
