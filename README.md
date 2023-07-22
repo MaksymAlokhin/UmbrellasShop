@@ -13,4 +13,5 @@ Images courtesy of [Pixabay](https://pixabay.com/)<br /><br />
 ![Sign up form](screenshots/sign-up-form.png)<br /><br />
 ![Product list](screenshots/product-list.png)<br /><br />
 ![Product details](screenshots/product-details.png)<br /><br />
+![Add product](screenshots/add-product.png)<br /><br />
 ![Edit product](screenshots/edit-product.png)<br /><br />
