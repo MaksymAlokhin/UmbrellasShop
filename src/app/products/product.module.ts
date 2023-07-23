@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ProductListComponent } from '../product-list/product-list.component';
 import { ProductDetailComponent } from '../product-detail/product-detail.component';
-import { ConvertToSpacesPipe } from '../shared/convert-to-spaces.pipe';
 import { RouterModule } from '@angular/router';
 import { productDetailGuard } from '../product-detail/product-detail.guard';
 import { productEditGuard } from '../product-edit/product-edit.guard';
@@ -15,7 +14,6 @@ import { ProductData } from './product-data';
   declarations: [
     ProductListComponent,
     ProductDetailComponent,
-    ConvertToSpacesPipe,
     ProductEditComponent
   ],
   imports: [

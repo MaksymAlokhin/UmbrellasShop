@@ -21,7 +21,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
   set listFilter(value: string) {
     this._listFilter = value;
-    this.filteredProducts = this.performFilter(value);
+    this.filteredProducts = this.listFilter
+      ? this.performFilter(this.listFilter)
+      : this.products;
   }
 
   filteredProducts: IProduct[] = [];
@@ -36,6 +38,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       error: (err) => (this.errorMessage = err),
     });
   }
+  
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
@@ -44,14 +47,24 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.showImage = !this.showImage;
   }
 
-  performFilter(filerBy: string): IProduct[] {
-    filerBy = filerBy.toLowerCase();
-    return this.products.filter((product: IProduct) =>
-      product.productName!.toLowerCase().includes(filerBy)
+  performFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.products.filter(
+      (product: IProduct) =>
+        product.productName!.toLocaleLowerCase().indexOf(filterBy) !== -1
     );
   }
 
-  onRatingClicked(message: string): void {
-    this.pageTitle = 'Umbrellas: ' + message;
+  // Checks both the product name and tags
+  performFilter2(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+    return this.products.filter(
+      (product: IProduct) =>
+        product.productName!.toLocaleLowerCase().indexOf(filterBy) !== -1 ||
+        (product.tags &&
+          product.tags.some(
+            (tag) => tag.toLocaleLowerCase().indexOf(filterBy) !== -1
+          ))
+    );
   }
 }
