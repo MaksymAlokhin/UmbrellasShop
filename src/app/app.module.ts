@@ -5,17 +5,21 @@ import { AppComponent } from './app.component';
 import { WelcomeComponent } from './home/welcome.component';
 import { RouterModule } from '@angular/router';
 import { ProductModule } from './products/product.module';
-import { CustomerComponent } from './customers/customer/customer.component';
+import { CustomerTemplateComponent } from './customers/customer-template/customer.component';
 import { SharedModule } from './shared/shared.module';
+import { CustomerComponent } from './customers/customer-reactive/customer.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
+    CustomerTemplateComponent,
     CustomerComponent
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot([
       { path: 'welcome', component: WelcomeComponent },

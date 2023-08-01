@@ -9,7 +9,7 @@ import { Customer } from './customer';
   templateUrl: './customer.component.html',
   styleUrls: ['./customer.component.scss']
 })
-export class CustomerComponent implements OnInit {
+export class CustomerTemplateComponent implements OnInit {
   customer = new Customer();
 
   constructor() { }
