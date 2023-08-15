@@ -1,19 +1,38 @@
 import { Injectable } from '@angular/core';
 import { IProduct } from './product';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, tap, throwError, of } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  map,
+  tap,
+  throwError,
+  of,
+  BehaviorSubject,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private productsUrl = 'api/products';
+  private products?: IProduct[];
+  private selectedProductSource = new BehaviorSubject<IProduct | null>(null);
+  selectedProductChanges$ = this.selectedProductSource.asObservable();
 
   constructor(private http: HttpClient) {}
 
+  changeSelectedProduct(selectedProduct: IProduct | null): void {
+    this.selectedProductSource.next(selectedProduct);
+  }
+
   getProducts(): Observable<IProduct[]> {
+    if (this.products) {
+      return of(this.products);
+    }
     return this.http.get<IProduct[]>(this.productsUrl).pipe(
-      tap((data) => console.log(JSON.stringify(data))),
+      tap((data) => console.log('All Products', JSON.stringify(data))),
+      tap((data) => (this.products = data)),
       catchError(this.handleError)
     );
   }
@@ -22,40 +41,84 @@ export class ProductService {
     if (id === 0) {
       return of(this.initializeProduct());
     }
+    if (this.products) {
+      const foundItem = this.products.find((item) => item.id === id);
+      if (foundItem) {
+        return of(foundItem);
+      }
+    }
     const url = `${this.productsUrl}/${id}`;
     return this.http.get<IProduct>(url).pipe(
-      tap((data) => console.log('getProduct: ' + JSON.stringify(data))),
+      tap((data) => console.log('Single Product:', JSON.stringify(data))),
       catchError(this.handleError)
     );
   }
 
-  createProduct(product: IProduct): Observable<IProduct> {
+  saveProduct(product: IProduct): Observable<IProduct> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    if (product.id === 0) {
+      return this.createProduct(product, headers);
+    }
+    return this.updateProduct(product, headers);
+  }
+
+  deleteProduct(id: number): Observable<IProduct> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.productsUrl}/${id}`;
+    return this.http.delete<IProduct>(url, { headers }).pipe(
+      tap(() => console.log('deleteProduct:', id)),
+      // Delete the item from the cached list.
+      tap(() => {
+        if (this.products) {
+          const foundIndex = this.products.findIndex((item) => item.id === id);
+          if (foundIndex > -1) {
+            this.products.splice(foundIndex, 1);
+            this.changeSelectedProduct(null);
+          }
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  private createProduct(
+    product: IProduct,
+    headers: HttpHeaders
+  ): Observable<IProduct> {
     product.id = null;
     return this.http
       .post<IProduct>(this.productsUrl, product, { headers })
       .pipe(
-        tap((data) => console.log('createProduct: ' + JSON.stringify(data))),
+        tap((createdProduct) =>
+          console.log('createProduct:', JSON.stringify(createdProduct))
+        ),
+        tap((createdProduct) => {
+          // Push the items to the cached list.
+          // If the user selected to add before listing the products,
+          // The products won't yet be cached.
+          if (this.products) {
+            this.products.push(createdProduct);
+          }
+          this.changeSelectedProduct(createdProduct);
+        }),
         catchError(this.handleError)
       );
   }
 
-  deleteProduct(id: number): Observable<{}> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.productsUrl}/${id}`;
-    return this.http.delete<IProduct>(url, { headers }).pipe(
-      tap((data) => console.log('deleteProduct: ' + id)),
-      catchError(this.handleError)
-    );
-  }
-
-  updateProduct(product: IProduct): Observable<IProduct> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  private updateProduct(
+    product: IProduct,
+    headers: HttpHeaders
+  ): Observable<IProduct> {
     const url = `${this.productsUrl}/${product.id}`;
     return this.http.put<IProduct>(url, product, { headers }).pipe(
-      tap(() => console.log('updateProduct: ' + product.id)),
-      // Return the product on an update
-      map(() => product),
+      // The put does *not* return the updated item.
+      tap(() => console.log('updateProduct: ', product.id)),
+      tap(() => {
+        if (this.products) {
+          var foundIndex = this.products.findIndex((x) => x.id == product.id);
+          this.products[foundIndex] = product;
+        }
+      }),
       catchError(this.handleError)
     );
   }

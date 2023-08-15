@@ -150,7 +150,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
       productCode: this.product.productCode,
       starRating: this.product.starRating,
       description: this.product.description,
-      imageUrl: this.placeholderImage
+      imageUrl: this.placeholderImage,
     });
     this.productForm.setControl('tags', this.fb.array(this.product.tags || []));
   }
@@ -174,17 +174,10 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.productForm.dirty) {
         const p = { ...this.product, ...this.productForm.value };
 
-        if (p.id === 0) {
-          this.productService.createProduct(p).subscribe({
-            next: () => this.onSaveComplete(),
-            error: (err: string) => (this.errorMessage = err),
-          });
-        } else {
-          this.productService.updateProduct(p).subscribe({
-            next: () => this.onSaveComplete(),
-            error: (err: string) => (this.errorMessage = err),
-          });
-        }
+        this.productService.saveProduct(p).subscribe({
+          next: () => this.onSaveComplete(),
+          error: (err: string) => (this.errorMessage = err),
+        });
       } else {
         this.onSaveComplete();
       }

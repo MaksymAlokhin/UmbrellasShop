@@ -2,10 +2,14 @@
   <div class="card-header">{{ pageTitle }}</div>
   <div class="card-body">
     <div class="row">
-      <div class="col-md-2">Filter by:</div>
-      <div class="col-md-4">
-        <input type="text" [(ngModel)]="listFilter" />
-      </div>
+      <pm-criteria
+        #filterCriteria
+        class="col-md-10"
+        [displayDetail]="includeDetail"
+        [hitCount]="filteredProducts.length"
+        (valueChange)="onValueChange($event)"
+      >
+      </pm-criteria>
     </div>
     <div class="table-responsive">
       <table class="table mb-0" *ngIf="products.length">
