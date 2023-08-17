@@ -5,8 +5,7 @@ import {
 
 @Component({
   selector: 'pm-criteria',
-  templateUrl: './criteria.component.html',
-  styleUrls: ['./criteria.component.css']
+  templateUrl: './criteria.component.html'
 })
 export class CriteriaComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() displayDetail = false;

@@ -10,6 +10,7 @@ import { SharedModule } from './shared/shared.module';
 import { CustomerComponent } from './customers/customer-reactive/customer.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
+
 @NgModule({
   declarations: [
     AppComponent,

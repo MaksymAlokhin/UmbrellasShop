@@ -9,16 +9,23 @@ import { ProductEditComponent } from '../product-edit/product-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { ProductData } from './product-data';
+import { ProductShellDetailComponent } from '../product-shell-detail/product-shell-detail.component';
+import { ProductShellListComponent } from '../product-shell-list/product-shell-list.component';
+import { ProductShellComponent } from '../product-shell/product-shell.component';
 
 @NgModule({
   declarations: [
     ProductListComponent,
     ProductDetailComponent,
-    ProductEditComponent
+    ProductEditComponent,
+    ProductShellDetailComponent,
+    ProductShellListComponent,
+    ProductShellComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: 'products', component: ProductListComponent },
+      { path: 'shell-products', component: ProductShellComponent },
       {
         path: 'products/:id',
         component: ProductDetailComponent,
