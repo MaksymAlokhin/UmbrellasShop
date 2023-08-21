@@ -19,7 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { IProduct } from '../products/product';
+import { IProduct, ProductResolved } from '../products/product';
 import { ProductService } from '../products/product.service';
 
 import { NumberValidators } from '../shared/number.validator';
@@ -29,7 +29,7 @@ import { ValidationMessage } from '../shared/validation-message.type';
 @Component({
   templateUrl: './product-edit.component.html',
 })
-export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ProductEditComponent implements OnInit, AfterViewInit {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
@@ -89,15 +89,22 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
       description: '',
       imageUrl: '',
     });
-    this.sub = this.route.paramMap.subscribe((params) => {
-      const id = +params.get('id')!;
-      this.getProduct(id);
+
+    this.route.data.subscribe((data) => {
+      const resolvedData: ProductResolved = data['resolvedData'];
+      this.errorMessage = String(resolvedData.error);
+      this.displayProduct(resolvedData.product);
     });
+
+    // this.sub = this.route.paramMap.subscribe((params) => {
+    //   const id = +params.get('id')!;
+    //   this.getProduct(id);
+    // });
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
+  // ngOnDestroy(): void {
+  //   this.sub.unsubscribe();
+  // }
 
   ngAfterViewInit(): void {
     // Watch for the blur event from any input element on the form.
@@ -126,17 +133,23 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tags.markAsDirty();
   }
 
-  getProduct(id: number): void {
-    this.productService.getProduct(id).subscribe({
-      next: (product: IProduct) => this.displayProduct(product),
-      error: (err) => (this.errorMessage = err),
-    });
-  }
+  // getProduct(id: number): void {
+  //   this.productService.getProduct(id).subscribe({
+  //     next: (product: IProduct) => this.displayProduct(product),
+  //     error: (err) => (this.errorMessage = err),
+  //   });
+  // }
 
-  displayProduct(product: IProduct): void {
+  displayProduct(product: IProduct | null): void {
     if (this.productForm) {
       this.productForm.reset();
     }
+
+    if (!product) {
+      this.pageTitle = 'No product found';
+      return;
+    }
+
     this.product = product;
 
     if (this.product.id === 0) {

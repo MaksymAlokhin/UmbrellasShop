@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IProduct } from '../products/product';
-import { ProductService } from '../products/product.service';
+import { IProduct, ProductResolved } from '../products/product';
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -9,30 +8,46 @@ import { ProductService } from '../products/product.service';
 })
 export class ProductDetailComponent implements OnInit {
   pageTitle = 'Product Detail';
-  product: IProduct | undefined;
+  product: IProduct | null = null;
   errorMessage = '';
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private productService: ProductService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (id) {
-      this.getProduct(id);
-    }
-    this.pageTitle += `: ${id}`;
+    const resolvedData: ProductResolved =
+    this.route.snapshot.data['resolvedData'];
+  this.errorMessage = String(resolvedData.error);
+  this.onProductRetrieved(resolvedData.product);
+    // const id = Number(this.route.snapshot.paramMap.get('id'));
+    // if (id) {
+    //   this.getProduct(id);
+    // }
+    // this.pageTitle += `: ${id}`;
   }
 
-  getProduct(id: number): void {
-    this.productService.getProduct(id).subscribe({
-      next: (product) => (this.product = product),
-      error: (err) => (this.errorMessage = err),
-    });
+  onProductRetrieved(product: IProduct | null): void {
+    this.product = product;
+
+    if (this.product) {
+      this.pageTitle = `Product Detail: ${this.product.productName}`;
+    } else {
+      this.pageTitle = 'No product found';
+    }
   }
+
+  // getProduct(id: number): void {
+  //   this.productService.getProduct(id).subscribe({
+  //     next: (product) => (this.product = product),
+  //     error: (err) => (this.errorMessage = err),
+  //   });
+  // }
   
   onBack(): void {
-    this.router.navigate(['/products']);
+    this.router.navigate(
+      ['/products'],
+      { queryParamsHandling: "preserve", queryParams: { message: '' } }
+    );
   }
 }

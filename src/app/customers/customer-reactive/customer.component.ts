@@ -122,7 +122,6 @@ export class CustomerComponent implements OnInit {
   }
 
   save(): void {
-    console.log(this.customerForm);
     console.log('Saved: ' + JSON.stringify(this.customerForm.value));
   }
 
@@ -136,12 +135,9 @@ export class CustomerComponent implements OnInit {
         )
         .join(' ');
     }
-    console.log(this.emailMessage);
   }
 
   setNotification(notifyVia: string): void {
-    //console.log(this.customerForm);
-
     const phoneControl = this.customerForm.get('phone');
     if (notifyVia === 'text') {
       phoneControl!.setValidators(Validators.required);

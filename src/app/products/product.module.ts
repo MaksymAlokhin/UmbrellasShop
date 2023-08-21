@@ -12,6 +12,8 @@ import { ProductData } from './product-data';
 import { ProductShellDetailComponent } from '../product-shell-detail/product-shell-detail.component';
 import { ProductShellListComponent } from '../product-shell-list/product-shell-list.component';
 import { ProductShellComponent } from '../product-shell/product-shell.component';
+import { authGuard } from '../user/auth.guard';
+import { productResolver } from './product.resolver';
 
 @NgModule({
   declarations: [
@@ -20,26 +22,32 @@ import { ProductShellComponent } from '../product-shell/product-shell.component'
     ProductEditComponent,
     ProductShellDetailComponent,
     ProductShellListComponent,
-    ProductShellComponent
+    ProductShellComponent,
   ],
   imports: [
     RouterModule.forChild([
-      { path: 'products', component: ProductListComponent },
-      { path: 'shell-products', component: ProductShellComponent },
+      { path: '', component: ProductListComponent },
+      {
+        path: 'shell-products',
+        component: ProductShellComponent,
+        canActivate: [authGuard],
+      },
       {
         path: 'products/:id',
         component: ProductDetailComponent,
         canActivate: [productDetailGuard],
+        resolve: { resolvedData: productResolver }
       },
       {
-        path: 'products/:id/edit',
+        path: ':id/edit',
         canDeactivate: [productEditGuard],
-        component: ProductEditComponent
-      }
+        component: ProductEditComponent,
+        resolve: { resolvedData: productResolver }
+      },
     ]),
     SharedModule,
     ReactiveFormsModule,
-    InMemoryWebApiModule.forRoot(ProductData),
-  ]
+    InMemoryWebApiModule.forRoot(ProductData, { delay: 500 }),
+  ],
 })
-export class ProductModule { }
+export class ProductModule {}

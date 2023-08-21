@@ -9,6 +9,9 @@ import { CustomerTemplateComponent } from './customers/customer-template/custome
 import { SharedModule } from './shared/shared.module';
 import { CustomerComponent } from './customers/customer-reactive/customer.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UserModule } from './user/user.module';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AppRoutingModule } from './app-routing.module';
 
 
 @NgModule({
@@ -16,20 +19,17 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppComponent,
     WelcomeComponent,
     CustomerTemplateComponent,
-    CustomerComponent
+    CustomerComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot([
-      { path: 'welcome', component: WelcomeComponent },
-      { path: 'customer', component: CustomerComponent },
-      { path: '', redirectTo: 'welcome', pathMatch: 'full' },
-      { path: '**', redirectTo: 'welcome', pathMatch: 'full' },
-    ]),
     ProductModule,
-    SharedModule
+    SharedModule,
+    UserModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent],
