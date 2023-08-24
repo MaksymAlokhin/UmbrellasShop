@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { UserModule } from './user/user.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
+import { MessageModule } from './messages/message.module';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { AppRoutingModule } from './app-routing.module';
     ProductModule,
     SharedModule,
     UserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MessageModule
   ],
   providers: [],
   bootstrap: [AppComponent],

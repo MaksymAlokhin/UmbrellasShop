@@ -20,3 +20,4 @@ export class MessageComponent {
     this.router.navigate([{ outlets: { popup: null } }]);
     this.messageService.isDisplayed = false;
   }
+}

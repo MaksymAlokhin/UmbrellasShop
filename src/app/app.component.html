@@ -45,6 +45,18 @@
           >Customer Form</a
         >
       </li>
+    </ul>
+    <!-- Right justified part of the menu -->
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item" *ngIf="isLoggedIn">
+        <a class="nav-link" [routerLink]="['/login']">Welcome {{ userName }}</a>
+      </li>
+      <li class="nav-item" *ngIf="!isMessageDisplayed">
+        <a class="nav-link" (click)="displayMessages()">Show Messages</a>
+      </li>
+      <li class="nav-item" *ngIf="isMessageDisplayed">
+        <a class="nav-link" (click)="hideMessages()">Hide Messages</a>
+      </li>
       <li class="nav-item" *ngIf="!isLoggedIn">
         <a class="nav-link" [routerLink]="['/login']">Log In</a>
       </li>
@@ -54,6 +66,13 @@
     </ul>
   </nav>
   <div class="container">
-    <router-outlet></router-outlet>
+    <div class="row">
+      <div class="col-md-10">
+        <router-outlet #o="outlet"></router-outlet>
+      </div>
+      <div class="col-md-2">
+        <router-outlet name="popup"></router-outlet>
+      </div>
+    </div>
   </div>
 </div>

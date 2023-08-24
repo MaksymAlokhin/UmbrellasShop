@@ -25,6 +25,7 @@ import { ProductService } from '../products/product.service';
 import { NumberValidators } from '../shared/number.validator';
 import { GenericValidator } from '../shared/generic-validator';
 import { ValidationMessage } from '../shared/validation-message.type';
+import { MessageService } from '../messages/message.service';
 
 @Component({
   templateUrl: './product-edit.component.html',
@@ -54,7 +55,8 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private messageService: MessageService
   ) {
     this.validationMessages = {
       productName: {
@@ -188,7 +190,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
         const p = { ...this.product, ...this.productForm.value };
 
         this.productService.saveProduct(p).subscribe({
-          next: () => this.onSaveComplete(),
+          next: () => this.onSaveComplete(`The new ${this.product?.productName} was saved`),
           error: (err: string) => (this.errorMessage = err),
         });
       } else {
@@ -199,7 +201,10 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onSaveComplete(): void {
+  onSaveComplete(message?: string): void {
+    if (message) {
+      this.messageService.addMessage(message);
+    }
     // Reset the form to clear the flags
     this.productForm.reset();
     this.router.navigate(['/products']);
