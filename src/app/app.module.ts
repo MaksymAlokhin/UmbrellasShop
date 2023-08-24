@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { WelcomeComponent } from './home/welcome.component';
-import { RouterModule } from '@angular/router';
 import { ProductModule } from './products/product.module';
 import { CustomerTemplateComponent } from './customers/customer-template/customer.component';
 import { SharedModule } from './shared/shared.module';

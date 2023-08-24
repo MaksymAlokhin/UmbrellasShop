@@ -34,12 +34,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productParameterService.showImage = value;
   }
 
+  get listFilter(): string {
+    return this.productParameterService.filterBy;
+  }
+
   constructor(
     private productService: ProductService,
     private productParameterService: ProductParameterService
   ) {}
 
   ngOnInit(): void {
+    //this.listFilter = this.route.snapshot.queryParamMap.get('filterBy') || '';
+    //this.showImage = this.route.snapshot.queryParamMap.get('showImage') === 'true';
     this.sub = this.productService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
@@ -71,8 +77,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   performFilter(filterBy?: string): void {
     if (filterBy) {
-      this.filteredProducts = this.products.filter(product =>
-        product.productName!.toLocaleLowerCase().indexOf(filterBy.toLocaleLowerCase()) !== -1);
+      this.filteredProducts = this.products.filter(
+        (product) =>
+          product
+            .productName!.toLocaleLowerCase()
+            .indexOf(filterBy.toLocaleLowerCase()) !== -1
+      );
     } else {
       this.filteredProducts = this.products;
     }

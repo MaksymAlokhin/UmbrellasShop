@@ -17,7 +17,6 @@ import { CustomerComponent } from './customers/customer-reactive/customer.compon
       { path: 'customer', component: CustomerComponent },
       {
         path: 'products',
-        canActivate: [authGuard],
         data: { preload: false },
         loadChildren: () =>
           import('./products/product.module').then(m => m.ProductModule)

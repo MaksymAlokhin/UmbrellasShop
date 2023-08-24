@@ -30,7 +30,7 @@ import { MessageService } from '../messages/message.service';
 @Component({
   templateUrl: './product-edit.component.html',
 })
-export class ProductEditComponent implements OnInit, AfterViewInit {
+export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
@@ -40,7 +40,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
   productForm!: FormGroup;
 
   product!: IProduct;
-  private sub!: Subscription;
+  private sub = new Subscription();
 
   // Use with the generic validation message class
   displayMessage: ValidationMessage = {};
@@ -91,12 +91,13 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       description: '',
       imageUrl: '',
     });
-
-    this.route.data.subscribe((data) => {
-      const resolvedData: ProductResolved = data['resolvedData'];
-      this.errorMessage = String(resolvedData.error);
-      this.displayProduct(resolvedData.product);
-    });
+    this.sub.add(
+      this.route.data.subscribe((data) => {
+        const resolvedData: ProductResolved = data['resolvedData'];
+        this.errorMessage = String(resolvedData.error);
+        this.displayProduct(resolvedData.product);
+      })
+    );
 
     // this.sub = this.route.paramMap.subscribe((params) => {
     //   const id = +params.get('id')!;
@@ -104,9 +105,9 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
     // });
   }
 
-  // ngOnDestroy(): void {
-  //   this.sub.unsubscribe();
-  // }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 
   ngAfterViewInit(): void {
     // Watch for the blur event from any input element on the form.
@@ -189,10 +190,13 @@ export class ProductEditComponent implements OnInit, AfterViewInit {
       if (this.productForm.dirty) {
         const p = { ...this.product, ...this.productForm.value };
 
-        this.productService.saveProduct(p).subscribe({
-          next: () => this.onSaveComplete(`The new ${this.product?.productName} was saved`),
-          error: (err: string) => (this.errorMessage = err),
-        });
+        this.sub.add(
+          this.productService.saveProduct(p).subscribe({
+            next: () =>
+              this.onSaveComplete(`${this.product?.productName} was saved`),
+            error: (err: string) => (this.errorMessage = err),
+          })
+        );
       } else {
         this.onSaveComplete();
       }

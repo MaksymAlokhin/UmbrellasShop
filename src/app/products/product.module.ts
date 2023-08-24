@@ -26,7 +26,11 @@ import { productResolver } from './product.resolver';
   ],
   imports: [
     RouterModule.forChild([
-      { path: '', component: ProductListComponent },
+      {
+        path: 'products',
+        component: ProductListComponent,
+        canActivate: [authGuard],
+      },
       {
         path: 'shell-products',
         component: ProductShellComponent,
@@ -36,13 +40,13 @@ import { productResolver } from './product.resolver';
         path: 'products/:id',
         component: ProductDetailComponent,
         canActivate: [productDetailGuard],
-        resolve: { resolvedData: productResolver }
+        resolve: { resolvedData: productResolver },
       },
       {
         path: ':id/edit',
         canDeactivate: [productEditGuard],
         component: ProductEditComponent,
-        resolve: { resolvedData: productResolver }
+        resolve: { resolvedData: productResolver },
       },
     ]),
     SharedModule,
