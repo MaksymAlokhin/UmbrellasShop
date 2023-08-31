@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IProduct } from './product';
+import { FormValidation, IProduct } from './product';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Observable,
@@ -17,13 +17,35 @@ import {
 export class ProductService {
   private productsUrl = 'api/products';
   private products?: IProduct[];
+  
   private selectedProductSource = new BehaviorSubject<IProduct | null>(null);
   selectedProductChanges$ = this.selectedProductSource.asObservable();
+  defaultValidation: FormValidation = {
+    infoTabValid: true,
+    infoTabDirty: false,
+    tagsTabValid: true,
+    tagsTabDirty: false,
+  };
+  private formValidSource = new BehaviorSubject<FormValidation>(
+    this.defaultValidation
+  );
+  formValidSourceChanges$ = this.formValidSource.asObservable();
 
   constructor(private http: HttpClient) {}
 
   changeSelectedProduct(selectedProduct: IProduct | null): void {
-    this.selectedProductSource.next(selectedProduct);
+    this.selectedProductSource.next({
+      ...this.selectedProductSource.value!,
+      ...selectedProduct,
+    });
+  }
+
+  changeValidation(validation: FormValidation): void {
+    this.formValidSource.next({ ...this.formValidSource.value, ...validation });
+  }
+
+  resetValidation(): void {
+    this.formValidSource.next(this.defaultValidation);
   }
 
   getProducts(): Observable<IProduct[]> {

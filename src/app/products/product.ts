@@ -14,3 +14,10 @@ export interface ProductResolved {
   product: IProduct | null;
   error?: string;
 }
+
+export interface FormValidation {
+  infoTabValid?: boolean;
+  infoTabDirty?: boolean;
+  tagsTabValid?: boolean;
+  tagsTabDirty?: boolean;
+}

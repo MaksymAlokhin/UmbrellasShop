@@ -14,6 +14,8 @@ import { ProductShellListComponent } from '../product-shell-list/product-shell-l
 import { ProductShellComponent } from '../product-shell/product-shell.component';
 import { authGuard } from '../user/auth.guard';
 import { productResolver } from './product.resolver';
+import { ProductEditInfoComponent } from '../product-edit-info/product-edit-info.component';
+import { ProductEditTagsComponent } from '../product-edit-tags/product-edit-tags.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { productResolver } from './product.resolver';
     ProductShellDetailComponent,
     ProductShellListComponent,
     ProductShellComponent,
+    ProductEditInfoComponent,
+    ProductEditTagsComponent,
   ],
   imports: [
     RouterModule.forChild([
@@ -45,8 +49,19 @@ import { productResolver } from './product.resolver';
       {
         path: ':id/edit',
         canDeactivate: [productEditGuard],
-        component: ProductEditComponent,
         resolve: { resolvedData: productResolver },
+        component: ProductEditComponent,
+        children: [
+          { path: '', redirectTo: 'info', pathMatch: 'full' },
+          {
+            path: 'info',
+            component: ProductEditInfoComponent,
+          },
+          {
+            path: 'tags',
+            component: ProductEditTagsComponent,
+          },
+        ],
       },
     ]),
     SharedModule,

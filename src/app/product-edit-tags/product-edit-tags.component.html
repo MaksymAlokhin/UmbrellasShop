@@ -1,0 +1,44 @@
+<div class="card-body" *ngIf="product">
+    <form novalidate [formGroup]="productForm">
+      <div formArrayName="tags">
+        <div
+          class="form-group row mb-2"
+          *ngFor="let tag of tags.controls; let i = index"
+        >
+          <label class="col-md-2 col-form-label" [attr.for]="i">Tag</label>
+
+          <div class="col-md-8">
+            <input
+              class="form-control"
+              [id]="i"
+              type="text"
+              placeholder="Tag"
+              [formControlName]="i"
+            />
+          </div>
+          <button
+            class="col-md-1 btn btn-outline-warning btn-sm"
+            type="button"
+            title="Delete this search tag"
+            (click)="deleteTag(i)"
+          >
+            Delete Tag
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2 mb-2">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            type="button"
+            title="Add a search tag"
+            (click)="addTag()"
+          >
+            Add Tag
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
