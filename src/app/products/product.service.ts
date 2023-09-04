@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Observable,
   catchError,
-  map,
   tap,
   throwError,
   of,
@@ -18,6 +17,9 @@ export class ProductService {
   private productsUrl = 'api/products';
   private products?: IProduct[];
   
+  private resetFormSource = new BehaviorSubject<boolean>(false);
+  resetFormChanges$ = this.resetFormSource.asObservable();
+
   private selectedProductSource = new BehaviorSubject<IProduct | null>(null);
   selectedProductChanges$ = this.selectedProductSource.asObservable();
   defaultValidation: FormValidation = {
@@ -46,6 +48,10 @@ export class ProductService {
 
   resetValidation(): void {
     this.formValidSource.next(this.defaultValidation);
+  }
+
+  resetForm(reset: boolean): void {
+    this.resetFormSource.next(reset);
   }
 
   getProducts(): Observable<IProduct[]> {

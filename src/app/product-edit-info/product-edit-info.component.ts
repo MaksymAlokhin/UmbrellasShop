@@ -1,7 +1,6 @@
 import {
   Component,
   OnInit,
-  AfterViewInit,
   OnDestroy,
   ViewChildren,
   ElementRef,
@@ -13,10 +12,9 @@ import {
   Validators,
   FormControlName,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 
-import { Observable, Subscription, fromEvent, merge } from 'rxjs';
-import { debounceTime, take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { IProduct } from '../products/product';
 import { ProductService } from '../products/product.service';
@@ -24,16 +22,13 @@ import { ProductService } from '../products/product.service';
 import { NumberValidators } from '../shared/number.validator';
 import { GenericValidator } from '../shared/generic-validator';
 import { ValidationMessage } from '../shared/validation-message.type';
-import { MessageService } from '../messages/message.service';
 
 @Component({
   selector: 'um-product-edit-info',
   templateUrl: './product-edit-info.component.html',
   styleUrls: ['./product-edit-info.component.scss'],
 })
-export class ProductEditInfoComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class ProductEditInfoComponent implements OnInit, OnDestroy {
   @ViewChildren(FormControlName, { read: ElementRef })
   formInputElements!: ElementRef[];
 
@@ -86,21 +81,7 @@ export class ProductEditInfoComponent
       imageUrl: '',
     });
 
-    this.sub.add(
-      this.productService.selectedProductChanges$
-        .pipe(take(1))
-        .subscribe((product) => {
-          if (product) {
-            this.displayProduct(product);
-            if (!this.productForm.valid) {
-              this.productForm.markAllAsTouched();
-            }
-            this.displayMessage = this.genericValidator.processMessages(
-              this.productForm
-            );
-          }
-        })
-    );
+    this.getProduct();
 
     this.sub.add(
       this.productForm.valueChanges.subscribe((data) => {
@@ -109,13 +90,26 @@ export class ProductEditInfoComponent
           infoTabDirty: this.productForm.dirty,
         });
         this.productService.changeSelectedProduct(data);
-
+        this.displayMessage = this.genericValidator.processMessages(
+          this.productForm
+        );
         // if (data && this.productForm.dirty && this.productForm.valid) {
         //   Object.assign(this.product, data);
         // }
       })
     );
 
+    this.sub.add(
+      this.productService.resetFormChanges$.subscribe((reset) => {
+        if (reset) {
+          this.productForm.reset();
+          this.getProduct();
+          this.displayMessage = this.genericValidator.processMessages(
+            this.productForm
+          );
+        }
+      })
+    );
     // this.sub = this.route.paramMap.subscribe((params) => {
     //   const id = +params.get('id')!;
     //   this.getProduct(id);
@@ -126,26 +120,26 @@ export class ProductEditInfoComponent
     this.sub.unsubscribe();
   }
 
-  ngAfterViewInit(): void {
-    // Watch for the blur event from any input element on the form.
-    // This is required because the valueChanges does not provide notification on blur
-    if (this.formInputElements) {
-      const controlBlurs: Observable<any>[] = this.formInputElements.map(
-        (formControl: ElementRef) =>
-          fromEvent(formControl.nativeElement, 'blur')
-      );
+  // ngAfterViewInit(): void {
+  //   // Watch for the blur event from any input element on the form.
+  //   // This is required because the valueChanges does not provide notification on blur
+  //   if (this.formInputElements) {
+  //     const controlBlurs: Observable<any>[] = this.formInputElements.map(
+  //       (formControl: ElementRef) =>
+  //         fromEvent(formControl.nativeElement, 'blur')
+  //     );
 
-      // Merge the blur event observable with the valueChanges observable
-      // so we only need to subscribe once.
-      merge(this.productForm.valueChanges, ...controlBlurs)
-        .pipe(debounceTime(800))
-        .subscribe((value) => {
-          this.displayMessage = this.genericValidator.processMessages(
-            this.productForm
-          );
-        });
-    }
-  }
+  //     // Merge the blur event observable with the valueChanges observable
+  //     // so we only need to subscribe once.
+  //     merge(this.productForm.valueChanges, ...controlBlurs)
+  //       .pipe(debounceTime(800))
+  //       .subscribe((value) => {
+  //         this.displayMessage = this.genericValidator.processMessages(
+  //           this.productForm
+  //         );
+  //       });
+  //   }
+  // }
 
   // getProduct(id: number): void {
   //   this.productService.getProduct(id).subscribe({
@@ -153,6 +147,24 @@ export class ProductEditInfoComponent
   //     error: (err) => (this.errorMessage = err),
   //   });
   // }
+
+  getProduct(): void {
+    this.sub.add(
+      this.productService.selectedProductChanges$
+        .pipe(take(1))
+        .subscribe((product) => {
+          if (product) {
+            this.displayProduct(product);
+            if (!this.productForm.valid && product.id !== 0) {
+              this.productForm.markAllAsTouched();
+            }
+            this.displayMessage = this.genericValidator.processMessages(
+              this.productForm
+            );
+          }
+        })
+    );
+  }
 
   displayProduct(product: IProduct | null): void {
     if (this.productForm) {

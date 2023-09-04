@@ -42,10 +42,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const resolvedData: ProductResolved =
-      this.route.snapshot.data['resolvedData'];
-    this.errorMessage = String(resolvedData.error);
-    this.onProductRetrieved(resolvedData.product);
+    this.sub.add(
+      this.route.data.subscribe((data) => {
+        const resolvedData: ProductResolved = data['resolvedData'];
+        this.errorMessage = String(resolvedData.error);
+        this.onProductRetrieved(resolvedData.product);
+      })
+    );
     // this.sub.add(
     //   this.route.data.subscribe((data) => {
     //     const resolvedData: ProductResolved = data['resolvedData'];
@@ -89,11 +92,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.pageTitle = 'No product found';
       return;
     }
-
     if (product.id === 0) {
       this.pageTitle = 'Add Product';
+      this.productService.resetForm(true);
     } else {
       this.pageTitle = `Edit Product: ${product.productName}`;
+      this.productService.resetForm(false);
     }
   }
 
@@ -142,9 +146,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (path) {
       switch (path) {
         case 'info':
-          return this.formValidation.infoTabValid!;
+          return !(!this.formValidation.infoTabValid! && this.formValidation.infoTabDirty);
         case 'tags':
-          return this.formValidation.tagsTabValid!;
+          return !(!this.formValidation.tagsTabValid! && this.formValidation.tagsTabDirty);
       }
     }
 

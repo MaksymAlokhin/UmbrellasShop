@@ -38,16 +38,6 @@ export class ProductEditTagsComponent implements OnInit, OnDestroy {
     });
 
     this.sub.add(
-      this.productService.selectedProductChanges$
-        .pipe(take(1))
-        .subscribe((product) => {
-          if (product) {
-            this.displayProduct(product);
-          }
-        })
-    );
-
-    this.sub.add(
       this.productForm.valueChanges.subscribe((data) => {
         this.productService.changeValidation({
           tagsTabValid: this.productForm.valid,
@@ -58,6 +48,17 @@ export class ProductEditTagsComponent implements OnInit, OnDestroy {
         // if (data && this.productForm.dirty && this.productForm.valid) {
         //   Object.assign(this.product, data);
         // }
+      })
+    );
+
+    this.getProduct();
+
+    this.sub.add(
+      this.productService.resetFormChanges$.subscribe((reset) => {
+        if (reset) {
+          this.productForm.reset();
+          this.getProduct();
+        }
       })
     );
   }
@@ -75,6 +76,18 @@ export class ProductEditTagsComponent implements OnInit, OnDestroy {
     this.productForm.markAsDirty();
     this.tags.removeAt(index);
     this.tags.markAsDirty();
+  }
+
+  getProduct(): void {
+    this.sub.add(
+      this.productService.selectedProductChanges$
+        .pipe(take(1))
+        .subscribe((product) => {
+          if (product) {
+            this.displayProduct(product);
+          }
+        })
+    );
   }
 
   displayProduct(product: IProduct | null): void {
