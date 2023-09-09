@@ -12,6 +12,8 @@ import { UserModule } from './user/user.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MessageModule } from './messages/message.module';
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { ProductData } from './products/product-data';
 
 
 @NgModule({
@@ -30,6 +32,7 @@ import { MessageModule } from './messages/message.module';
     SharedModule,
     UserModule,
     AppRoutingModule,
+    InMemoryWebApiModule.forRoot(ProductData, { delay: 500 }),
     MessageModule
   ],
   providers: [],

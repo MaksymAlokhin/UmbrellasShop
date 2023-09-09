@@ -146,14 +146,23 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (path) {
       switch (path) {
         case 'info':
-          return !(!this.formValidation.infoTabValid! && this.formValidation.infoTabDirty);
+          return !(
+            !this.formValidation.infoTabValid! &&
+            this.formValidation.infoTabDirty
+          );
         case 'tags':
-          return !(!this.formValidation.tagsTabValid! && this.formValidation.tagsTabDirty);
+          return !(
+            !this.formValidation.tagsTabValid! &&
+            this.formValidation.tagsTabDirty
+          );
       }
     }
 
     return (
-      this.formValidation.infoTabValid! && this.formValidation.tagsTabValid!
+      !(
+        !this.formValidation.infoTabValid! && this.formValidation.infoTabDirty
+      ) &&
+      !(!this.formValidation.tagsTabValid! && this.formValidation.tagsTabDirty)
     );
   }
 
